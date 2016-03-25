@@ -1,0 +1,63 @@
+extends layout
+
+block content
+	style.
+		body{
+			background: url('http://393communications.com/wp-content/uploads/2011/03/Taipei-101.jpg') 40% 20%;
+		}
+	script.
+		
+		var socket = io();
+		$( document ).ready(function() {
+		   var this_user = chance.name();
+		   $('#current_user').text(this_user);
+		   console.log(this_user); 
+			
+		    console.log( "ready!" );
+		    $('form').submit(function(){
+		    socket.emit('chat message',this_user +": " + $('#message_body').val());
+		    $('#message_body').val('');
+		    console.log();
+		    return false;
+
+			});
+
+			
+
+			socket.on('more users', function(count){
+				$('#count').text(count);
+			});	
+
+			socket.on('less users', function(count){
+				$('#count').text(count);
+			});	
+
+			socket.on('chat message', function(msg){
+		  	console.log('message recieved')
+		    $('#messages').append($('<div class="list-group-item" style="color:black;background-color:white;">').text(msg));
+		    $('#message_box').scrollTop(1000000);
+
+		  	});
+		  	})
+
+		  	
+		 
+	center
+		br
+		img(src="http://www.roamandwander.com/wp-content/uploads/2015/10/RnW-Logo-white.png" class="img-relative")
+		br
+
+	div(class="panel panel-default col-lg-12")
+		div(class="panel panel-body")
+			center
+				h3 Chat Roam
+				p Users Online Right now: <span id="count"> 
+			div(style="height:250px;background-color:white;overflow:auto;overflow-x:hidden;overflow-y:hidden;" id="message_box")
+				div(class="list-group" id="messages" )
+		div(class="jumbotron")
+			form(action="")
+				h4 Message:
+				p Your User Id is <span id="current_user">
+				div(class="form-group")
+					textarea(id="message_body" class="form-control")
+					input(type="submit" class="btn btn-info btn-block" value="Send")
